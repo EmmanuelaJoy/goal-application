@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Goal } from '../goal';
 import { GoalService } from '../goal-service/goal.service';
+import { AlertService } from '../alert-service/alert.service'
+import { Quote } from '../quote-class/quote';
+import { HttpClient } from '@angular/common/http'
 
 @Component({
   selector: 'app-goal',
@@ -8,6 +11,10 @@ import { GoalService } from '../goal-service/goal.service';
   styleUrls: ['./goal.component.css']
 })
 export class GoalComponent implements OnInit {
+
+  goals: Goal[];
+  alertService: AlertService;
+  quote!: Quote;
 
   toggleDetails(index) {
     this.goals[index].showDescription = !this.goals[index].showDescription;
@@ -19,6 +26,7 @@ export class GoalComponent implements OnInit {
 
       if (toDelete) {
         this.goals.splice(index, 1)
+        this.alertService.alertMe("The goal has been deleted")
       }
     }
   }
@@ -30,10 +38,9 @@ export class GoalComponent implements OnInit {
     this.goals.push(goal)
   }
 
-  goals: Goal[];
-
-  constructor(goalService: GoalService) {
+  constructor(goalService: GoalService, alertService: AlertService, private http: HttpClient) {
     this.goals = goalService.getGoals()
+    this.alertService = alertService;
   }
 
   ngOnInit(): void {
